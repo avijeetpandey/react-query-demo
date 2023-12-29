@@ -47,3 +47,11 @@ useEffect(() => {
 ```
 
 This is how we make queries using react query and we prefetch the data as well
+
+### Stale time vs cache time
+
+**Stale time**
+is the duration for which data is considered fresh. After the staleTime has elapsed, data is considered stale and any new calls to the query will trigger a re-fetch from the server. The default value for staleTime is 0, which means that data is immediately considered stale.
+
+**Cache time**
+is the duration for which inactive data is stored in the cache before it is deleted. This is different from staleTime, which refers to how long data is considered fresh. The default value for cacheTime is 5 minutes.
