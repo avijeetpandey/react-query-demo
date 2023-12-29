@@ -1,25 +1,45 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import { useState } from "react";
 import { Post } from "../types/post.type";
 import { MAX_POST_PAGE } from "../constants";
+import { useQuery } from "@tanstack/react-query";
+import { fetchPosts } from "../api/posts";
 
 function Posts() {
   const [currentPage, setCurrentPage] = useState<number>(0);
   const [selectedPost, setSelectedPost] = useState<Post | null>(null);
 
-  const data: Post[] = [];
+  const { isLoading, isError, error, data } = useQuery<Post[], Error>({
+    queryKey: ["posts"],
+    queryFn: async () => await fetchPosts(currentPage),
+  });
+
+  if (isLoading) {
+    return <h3>Loading</h3>;
+  }
+
+  if (isError) {
+    return (
+      <>
+        <h3>Oops something went wrong</h3>
+        <p>{error.message}</p>
+      </>
+    );
+  }
 
   return (
     <>
       <ul>
-        {data.map((post: Post) => (
-          <li
-            key={post.id}
-            className="post-title"
-            onClick={() => setSelectedPost(post)}
-          >
-            {post.title}
-          </li>
-        ))}
+        {data &&
+          data.map((post: Post) => (
+            <li
+              key={post.id}
+              className="post-title"
+              onClick={() => setSelectedPost(post)}
+            >
+              {post.title}
+            </li>
+          ))}
       </ul>
       <div className="pages">
         <button
